@@ -14,22 +14,21 @@ const Register = () => {
   const initialValues = {
     name: "",
     email: "",
-    password: "", 
+    password: "",
   };
 
   const handleSubmit = async (
     values: typeof initialValues,
-    { resetForm, setSubmitting }: any
+    {
+      resetForm,
+      setSubmitting,
+    }: { resetForm: () => void; setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    const { name, email } = values;
-
-    const resultAction = await dispatch(registerUser({ name, email }));
-
+    const resultAction = await dispatch(registerUser(values));
     if (registerUser.fulfilled.match(resultAction)) {
       resetForm();
       navigate("/");
     }
-
     setSubmitting(false);
   };
 

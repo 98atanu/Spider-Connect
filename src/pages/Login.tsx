@@ -1,24 +1,23 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAppSelector, useAppDispatch } from "../store"; // ✅ use typed hooks
+import { useAppSelector, useAppDispatch } from "../store";
 import { loginSchema } from "../validation/loginSchema";
 import { loginUser } from "../store/slices/auth-slice";
 
 const Login = () => {
-  const dispatch = useAppDispatch(); // ✅ properly initialize
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading } = useAppSelector((state) => state.auth);
 
   const initialValues = {
-    name: "",
     email: "",
     password: "",
   };
 
   const handleSubmit = async (
     values: typeof initialValues,
-    { resetForm }: any
+    { resetForm }: { resetForm: () => void }
   ) => {
     const resultAction = await dispatch(loginUser(values));
     if (loginUser.fulfilled.match(resultAction)) {

@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
+// Updated User interface to include password
 export interface User {
   name: string;
   email: string;
-  profileImage?: string
+  password: string;
+  profileImage?: string;
 }
 
 interface AuthState {
@@ -31,9 +33,7 @@ export const registerUser = createAsyncThunk(
       }
 
       users.push(userData);
-
       localStorage.setItem('authUsers', JSON.stringify(users));
-
       toast.success('Registered successfully 🎉');
       return userData;
     } catch (err: any) {
@@ -45,7 +45,7 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
-  async (userData: User, { rejectWithValue }) => {
+  async (userData: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const storedUsers = localStorage.getItem('authUsers');
       if (!storedUsers) {
@@ -53,10 +53,12 @@ export const loginUser = createAsyncThunk(
       }
 
       const users: User[] = JSON.parse(storedUsers);
+      const existingUser = users.find(
+        user => user.email === userData.email && user.password === userData.password
+      );
 
-      const existingUser = users.find(user => user.email === userData.email);
       if (!existingUser) {
-        throw new Error('Invalid email');
+        throw new Error('Invalid email or password');
       }
 
       toast.success('Logged in successfully 🚀');
@@ -86,11 +88,9 @@ const authSlice = createSlice({
     updateProfileImage(state, action: PayloadAction<string>) {
       if (state.user) {
         state.user.profileImage = action.payload;
-    
-        // Update localStorage user
+
         localStorage.setItem("authUser", JSON.stringify(state.user));
-    
-        // Also update inside authUsers list
+
         const storedUsers = localStorage.getItem("authUsers");
         if (storedUsers) {
           const users: User[] = JSON.parse(storedUsers);
@@ -101,7 +101,6 @@ const authSlice = createSlice({
         }
       }
     }
-    
   },
   extraReducers: (builder) => {
     builder
@@ -117,7 +116,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-     
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
