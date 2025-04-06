@@ -8,6 +8,7 @@ import { toggleLike } from "../store/slices/like-slice";
 import { Post, deletePost } from "../store/slices/post-slice";
 import CommentThread from "./comment-thread/CommentThread";
 import UpdateCard from "./UpdateCard";
+import { User } from "../store/slices/auth-slice";
 
 interface FeedCardProps {
   post: Post;
@@ -20,7 +21,14 @@ const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
   const isLiked = user && likes.includes(user.email);
 
   const [showComments, setShowComments] = useState(false);
-  const [updateModal, setUpdateModal] = useState(false); // ✅ Modal state
+  const [updateModal, setUpdateModal] = useState(false); 
+
+  const storedUsers = JSON.parse(localStorage.getItem("authUsers") || "[]");
+const postAuthor = storedUsers.find((u: User) => u.email === post.user.email);
+
+const profileImage =
+  postAuthor?.profileImage ||
+  `https://api.dicebear.com/6.x/initials/svg?seed=${post.user.name}`;
 
   const handleLike = () => {
     if (user) {
@@ -50,10 +58,17 @@ const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
     <div className="bg-slate-800 text-white rounded-2xl shadow-md p-4 mb-6 max-w-full sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
-        <div>
-          <p className="font-semibold text-lg">{post.user.name}</p>
-          <p className="text-xs text-slate-400">{timeAgo(post.createdAt)}</p>
-        </div>
+      <div className="flex items-center space-x-3">
+      <img
+  src={profileImage}
+  alt="Profile"
+  className="w-10 h-10 rounded-full object-cover border border-indigo-500"
+/>
+  <div>
+    <p className="font-semibold text-lg">{post.user.name}</p>
+    <p className="text-xs text-slate-400">{timeAgo(post.createdAt)}</p>
+  </div>
+</div>
         {user?.email === post.user.email && (
           <div className="space-x-3 flex items-center">
             <button
@@ -78,7 +93,7 @@ const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
           <img
             src={post.image}
             alt="Post"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         </div>
       )}
