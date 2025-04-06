@@ -7,27 +7,24 @@ interface ImageState {
   error: string | null;
 }
 
-// Initial state
 const initialState: ImageState = {
-  imageUrl: localStorage.getItem('profileImage') || null, // Load from localStorage if exists
+  imageUrl: localStorage.getItem('profileImage') || null, 
   loading: false,
   error: null,
 };
 
-// Async thunk for uploading image to Cloudinary
 export const uploadProfileImage = createAsyncThunk(
   'image/uploadProfileImage',
   async (file: File, { rejectWithValue }) => {
     try {
       const uploadedImageUrl = await uploadImageToCloudinary(file);
-      return uploadedImageUrl; // Returning the uploaded URL
+      return uploadedImageUrl;
     } catch (error: any) {
-      return rejectWithValue(error.message); // Returning error message
+      return rejectWithValue(error.message); 
     }
   }
 );
 
-// Image slice
 const imageSlice = createSlice({
   name: 'image',
   initialState,
@@ -45,8 +42,8 @@ const imageSlice = createSlice({
       })
       .addCase(uploadProfileImage.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        state.imageUrl = action.payload; // Save the uploaded image URL
-        localStorage.setItem('profileImage', action.payload); // Persist image URL in localStorage
+        state.imageUrl = action.payload; 
+        localStorage.setItem('profileImage', action.payload); 
       })
       .addCase(uploadProfileImage.rejected, (state, action) => {
         state.loading = false;

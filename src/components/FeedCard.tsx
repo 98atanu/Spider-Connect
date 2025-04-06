@@ -55,51 +55,51 @@ const FeedCard: React.FC<FeedCardProps> = ({ post }) => {
           <p className="text-xs text-slate-400">{timeAgo(post.createdAt)}</p>
         </div>
         {user?.email === post.user.email && (
-  <div className="space-x-3 flex items-center">
-    <button
-      onClick={() => setUpdateModal(true)}
-      className="text-slate-300 hover:text-indigo-400 text-xl hover:scale-105 cursor-pointer"
-      title="Edit"
-    >
-      <MdEditSquare />
-    </button>
-    <button
-      onClick={handleDelete}
-      className="text-slate-300 hover:text-red-400 text-xl hover:scale-105 cursor-pointer"
-      title="Delete"
-    >
-      <RiDeleteBin5Fill />
-    </button>
-  </div>
-)}
+          <div className="space-x-3 flex items-center">
+            <button
+              onClick={() => setUpdateModal(true)}
+              className="text-slate-300 hover:text-indigo-400 text-xl hover:scale-105 cursor-pointer"
+              title="Edit"
+            >
+              <MdEditSquare />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-slate-300 hover:text-red-400 text-xl hover:scale-105 cursor-pointer"
+              title="Delete"
+            >
+              <RiDeleteBin5Fill />
+            </button>
+          </div>
+        )}
       </div>
-
-      {/* Image */}
       {post.image && (
         <div className="my-3 w-full h-[400px] sm:h-[500px] rounded-xl overflow-hidden">
-          <img src={post.image} alt="Post" className="w-full h-full object-cover" />
+          <img
+            src={post.image}
+            alt="Post"
+            className="w-full h-full object-cover"
+          />
         </div>
       )}
-
-      {/* Caption */}
       <p className="mb-4">{post.caption}</p>
-
-      {/* Actions */}
       <div className="flex items-center space-x-6 text-slate-300 ">
-        <button onClick={handleLike} className="flex items-center gap-1 hover:text-pink-400 transition cursor-pointer">
+        <button
+          onClick={handleLike}
+          className="flex items-center gap-1 hover:text-pink-400 transition cursor-pointer"
+        >
           <FaHeart className={isLiked ? "text-pink-500" : ""} />
           <span>{likes.length}</span>
         </button>
-        <button onClick={toggleComments} className="flex items-center gap-1 hover:text-blue-400 transition cursor-pointer">
+        <button
+          onClick={toggleComments}
+          className="flex items-center gap-1 hover:text-blue-400 transition cursor-pointer"
+        >
           <BiSolidMessageRounded />
           <span>Comment</span>
         </button>
       </div>
-
-      {/* Comments Section */}
       {showComments && <CommentThread postId={post.id} />}
-
-      {/* Update Modal */}
       {updateModal && (
         <UpdateCard post={post} onClose={() => setUpdateModal(false)} />
       )}

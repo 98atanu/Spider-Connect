@@ -14,7 +14,7 @@ const Register = () => {
   const initialValues = {
     name: "",
     email: "",
-    password: "", // Not stored but validated
+    password: "", 
   };
 
   const handleSubmit = async (

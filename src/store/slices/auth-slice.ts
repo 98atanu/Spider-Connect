@@ -19,26 +19,19 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Async Thunks
-
-// Register a new user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData: User, { rejectWithValue }) => {
     try {
-      // Get the list of existing users from localStorage
       const storedUsers = localStorage.getItem('authUsers');
       const users: User[] = storedUsers ? JSON.parse(storedUsers) : [];
 
-      // Check if the user already exists
       if (users.some(user => user.email === userData.email)) {
         throw new Error('User already exists');
       }
 
-      // Add the new user to the array
       users.push(userData);
 
-      // Store the updated list in localStorage
       localStorage.setItem('authUsers', JSON.stringify(users));
 
       toast.success('Registered successfully 🎉');
@@ -50,7 +43,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Login an existing user
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData: User, { rejectWithValue }) => {
@@ -62,7 +54,6 @@ export const loginUser = createAsyncThunk(
 
       const users: User[] = JSON.parse(storedUsers);
 
-      // Find the user by email
       const existingUser = users.find(user => user.email === userData.email);
       if (!existingUser) {
         throw new Error('Invalid email');
@@ -76,8 +67,6 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
-
-// Slice
 
 const authSlice = createSlice({
   name: 'auth',
@@ -97,7 +86,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -110,7 +98,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Login
+     
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;

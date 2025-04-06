@@ -22,7 +22,7 @@ const Feed = () => {
         ) : (
           posts
             .slice()
-            .sort((a, b) => Number(b.id) - Number(a.id)) // Still good if id is numeric-like
+            .sort((a, b) => Number(b.id) - Number(a.id)) 
             .map((post) => <FeedCard key={post.id} post={post} />)
         )}
       </div>

@@ -25,7 +25,6 @@ const Login = () => {
       resetForm();
       navigate("/");
     }
-    // error toast is already handled in thunk
   };
 
   return (

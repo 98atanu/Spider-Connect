@@ -1,4 +1,3 @@
-// src/store/slices/commentSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Comment {
@@ -7,7 +6,7 @@ export interface Comment {
   content: string;
   user: { name: string; email: string };
   createdAt: string;
-  parentId?: string; // For nested comments
+  parentId?: string;
 }
 
 interface CommentState {

@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/index";
 import { addComment } from "../../store/slices/comment-slice";
-import { v4 as uuidv4 } from "uuid"; // For generating unique IDs
-
+import { v4 as uuidv4 } from "uuid"; 
 interface CommentFormProps {
   postId: string;
-  parentId?: string; // Optional, for nested comments
+  parentId?: string; 
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({ postId, parentId }) => {
@@ -24,7 +23,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, parentId }) => {
         parentId,
       };
       dispatch(addComment(newComment));
-      setContent(""); // Clear input field after submission
+      setContent(""); 
     }
   };
 
@@ -47,7 +46,6 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, parentId }) => {
         >
           {parentId ? "Reply" : "Comment"}
         </button>
-        {/* Optionally, add a cancel button for replies */}
         {parentId && (
           <button
             onClick={() => setContent("")}

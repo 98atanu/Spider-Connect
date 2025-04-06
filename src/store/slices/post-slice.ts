@@ -1,5 +1,3 @@
-// post-slice.ts
-
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface Post {
@@ -23,7 +21,6 @@ const initialState: PostState = {
   loading: false,
 };
 
-// Thunks
 export const loadPosts = createAsyncThunk("posts/loadPosts", async () => {
   const stored = localStorage.getItem("posts");
   return stored ? JSON.parse(stored) : [];
@@ -53,7 +50,7 @@ export const deletePost = createAsyncThunk("posts/deletePost", async (postId: st
   const currentPosts: Post[] = stored ? JSON.parse(stored) : [];
   const updatedPosts = currentPosts.filter((post) => post.id !== postId);
   localStorage.setItem("posts", JSON.stringify(updatedPosts));
-  return postId; // Return the postId to delete it from the Redux state
+  return postId; 
 });
 
 const postSlice = createSlice({
@@ -62,7 +59,6 @@ const postSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Load Posts
       .addCase(loadPosts.pending, (state) => {
         state.loading = true;
       })
@@ -74,12 +70,10 @@ const postSlice = createSlice({
         state.loading = false;
       })
 
-      // Create Post
       .addCase(createPost.fulfilled, (state, action: PayloadAction<Post>) => {
         state.posts.unshift(action.payload);
       })
 
-      // Update Post
       .addCase(updatePost.fulfilled, (state, action: PayloadAction<Post>) => {
         const index = state.posts.findIndex((post) => post.id === action.payload.id);
         if (index > -1) {
@@ -87,12 +81,10 @@ const postSlice = createSlice({
         }
       })
 
-      // Delete Post
       .addCase(deletePost.fulfilled, (state, action: PayloadAction<string>) => {
         state.posts = state.posts.filter((post) => post.id !== action.payload);
       });
   },
 });
-
 
 export default postSlice.reducer;

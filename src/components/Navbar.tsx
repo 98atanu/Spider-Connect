@@ -11,8 +11,6 @@ import { MdLibraryAdd } from "react-icons/md";
 import { FaCircleUser } from "react-icons/fa6";
 
 
-
-
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -37,7 +35,6 @@ const Navbar = () => {
   return (
     <nav className="bg-slate-800 shadow-md px-6 py-4 border-b border-slate-700">
       <div className="flex justify-between items-center">
-        {/* Logo */}
         <Link
           to="/"
           className="flex items-center space-x-2 text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition"
@@ -45,8 +42,6 @@ const Navbar = () => {
           <img src={SpiderLogo} alt="Spider Logo" className="h-8 w-8" />
           <span className="hidden sm:inline">Spider Connect</span>
         </Link>
-
-        {/* Main Icons */}
         <div className="flex items-center space-x-4">
           {user && (
             <>
@@ -80,8 +75,6 @@ const Navbar = () => {
               </span>
             </>
           )}
-
-          {/* Normal Login/Logout Button (sm and up) */}
           {user ? (
             <button
               onClick={handleLogout}
@@ -105,8 +98,6 @@ const Navbar = () => {
               </Link>
             </div>
           )}
-
-          {/* Hamburger (only on small screens) */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="block sm:hidden text-indigo-400 text-2xl"
@@ -115,8 +106,6 @@ const Navbar = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile dropdown */}
       {menuOpen && (
         <div className="sm:hidden mt-3 flex flex-col space-y-2">
           {user ? (

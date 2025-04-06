@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { toast } from 'react-toastify';
-import { setLoading } from '../store/slices/auth-slice';
-import { uploadImageToCloudinary } from '../utils/cloudinary'; 
-import { FaEdit } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { toast } from "react-toastify";
+import { setLoading } from "../store/slices/auth-slice";
+import { uploadImageToCloudinary } from "../utils/cloudinary";
+import { FaEdit } from "react-icons/fa";
 
 const Profile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
-  const [imageUrl, setImageUrl] = useState<string>(user?.profileImage || '');
+  const [imageUrl, setImageUrl] = useState<string>(user?.profileImage || "");
 
   useEffect(() => {
     if (user) {
-      setImageUrl(user.profileImage || ''); // Update image if user data changes
+      setImageUrl(user.profileImage || ""); 
     }
   }, [user]);
 
-  if (!user) return <div className="text-center text-red-500 mt-10">User not found</div>;
+  if (!user)
+    return <div className="text-center text-red-500 mt-10">User not found</div>;
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -27,16 +30,14 @@ const Profile = () => {
 
     try {
       const uploadedImageUrl = await uploadImageToCloudinary(file);
-
       if (uploadedImageUrl) {
-        // Update the image URL in the user profile (or just update local state here)
         setImageUrl(uploadedImageUrl);
-        toast.success('Profile picture updated successfully!');
+        toast.success("Profile picture updated successfully!");
       } else {
-        toast.error('Error uploading image. Please try again.');
+        toast.error("Error uploading image. Please try again.");
       }
     } catch (error) {
-      toast.error('Error uploading image. Please try again.');
+      toast.error("Error uploading image. Please try again.");
     } finally {
       dispatch(setLoading(false));
     }
@@ -46,15 +47,15 @@ const Profile = () => {
     <div className="min-h-screen bg-slate-900 text-white flex justify-center items-start pt-12">
       <div className="w-full max-w-xl bg-slate-800 text-white shadow-lg rounded-xl p-6 border border-slate-700">
         <div className="flex flex-col items-center">
-          {/* Image wrapper for positioning the edit icon */}
           <div className="relative w-32 h-32 mb-4">
             <img
-              src={imageUrl || `https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`}
+              src={
+                imageUrl ||
+                `https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`
+              }
               alt="Profile"
               className="w-full h-full rounded-full border-4 border-indigo-500 object-cover"
             />
-
-            {/* Edit Icon inside the image circle */}
             <label
               htmlFor="file-upload"
               title="Edit profile picture"

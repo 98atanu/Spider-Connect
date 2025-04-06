@@ -1,12 +1,11 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface LikeState {
-  [postId: string]: string[]; // postId: [userEmails]
+  [postId: string]: string[]; 
 }
 
 const initialState: LikeState = {};
 
-// Thunk to load likes from localStorage
 export const loadLikesFromStorage = createAsyncThunk(
   "likes/loadLikesFromStorage",
   async () => {
