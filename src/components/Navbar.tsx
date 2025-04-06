@@ -1,16 +1,14 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../store";
 import { RootState, AppDispatch } from "../store";
 import { logout, loginUser } from "../store/slices/auth-slice";
-import { useLocation } from "react-router-dom";
 import SpiderLogo from "../assets/web.png";
 import { useEffect, useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { FaHome } from "react-icons/fa";
 import { MdLibraryAdd } from "react-icons/md";
 import { FaCircleUser } from "react-icons/fa6";
-
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,12 +19,13 @@ const Navbar = () => {
   const location = useLocation();
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
 
-
   useEffect(() => {
     const userData = localStorage.getItem("authUser");
     if (userData && !user) {
       const parsedUser = JSON.parse(userData);
-      dispatch(loginUser({ name: parsedUser.name, email: parsedUser.email }));
+      if (parsedUser.email && parsedUser.password) {
+        dispatch(loginUser({ email: parsedUser.email, password: parsedUser.password }));
+      }
     }
   }, [dispatch, user]);
 
@@ -47,6 +46,7 @@ const Navbar = () => {
           <img src={SpiderLogo} alt="Spider Logo" className="h-8 w-8" />
           <span className={`${isAuthPage ? "inline" : "hidden"} sm:inline`}>Spider Connect</span>
         </Link>
+
         <div className="flex items-center space-x-4">
           {user && (
             <>
@@ -54,7 +54,6 @@ const Navbar = () => {
                 to="/"
                 className="flex items-center gap-1 text-indigo-400 hover:text-white transition"
               >
-                
                 <FaHome className="text-xl" />
                 <span className="hidden sm:inline font-bold">Feed</span>
               </Link>
@@ -75,11 +74,10 @@ const Navbar = () => {
               <span className="text-slate-300 text-sm hidden sm:inline">
                 Hi, {user.name} 👋
               </span>
-              <span className="text-slate-300 text-sm sm:hidden">
-                {user.name}
-              </span>
+              <span className="text-slate-300 text-sm sm:hidden">{user.name}</span>
             </>
           )}
+
           {user ? (
             <button
               onClick={handleLogout}
@@ -103,6 +101,7 @@ const Navbar = () => {
               </Link>
             </div>
           )}
+
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="block sm:hidden text-indigo-400 text-2xl"
@@ -111,6 +110,7 @@ const Navbar = () => {
           </button>
         </div>
       </div>
+
       {menuOpen && (
         <div className="sm:hidden mt-3 flex flex-col space-y-2">
           {user ? (
