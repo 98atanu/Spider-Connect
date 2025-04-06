@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useAppSelector } from "../store";
 import { RootState, AppDispatch } from "../store";
 import { logout, loginUser } from "../store/slices/auth-slice";
+import { useLocation } from "react-router-dom";
 import SpiderLogo from "../assets/web.png";
 import { useEffect, useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
@@ -16,6 +17,10 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = useAppSelector((state: RootState) => state.auth.user);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+
 
   useEffect(() => {
     const userData = localStorage.getItem("authUser");
@@ -40,7 +45,7 @@ const Navbar = () => {
           className="flex items-center space-x-2 text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition"
         >
           <img src={SpiderLogo} alt="Spider Logo" className="h-8 w-8" />
-          <span className="hidden sm:inline">Spider Connect</span>
+          <span className={`${isAuthPage ? "inline" : "hidden"} sm:inline`}>Spider Connect</span>
         </Link>
         <div className="flex items-center space-x-4">
           {user && (
