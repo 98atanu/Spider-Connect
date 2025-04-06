@@ -34,7 +34,7 @@ const likeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loadLikesFromStorage.fulfilled, (state, action) => {
+      .addCase(loadLikesFromStorage.fulfilled, (_state, action) => {
         return action.payload;
       });
   },
