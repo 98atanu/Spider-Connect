@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { toast } from "react-toastify";
-import { setLoading } from "../store/slices/auth-slice";
+import { setLoading, updateProfileImage } from "../store/slices/auth-slice";
 import { uploadImageToCloudinary } from "../utils/cloudinary";
 import { FaEdit } from "react-icons/fa";
 
@@ -13,7 +13,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (user) {
-      setImageUrl(user.profileImage || ""); 
+      setImageUrl(user.profileImage || "");
     }
   }, [user]);
 
@@ -32,6 +32,7 @@ const Profile = () => {
       const uploadedImageUrl = await uploadImageToCloudinary(file);
       if (uploadedImageUrl) {
         setImageUrl(uploadedImageUrl);
+        dispatch(updateProfileImage(uploadedImageUrl));
         toast.success("Profile picture updated successfully!");
       } else {
         toast.error("Error uploading image. Please try again.");

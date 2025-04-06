@@ -83,6 +83,25 @@ const authSlice = createSlice({
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
+    updateProfileImage(state, action: PayloadAction<string>) {
+      if (state.user) {
+        state.user.profileImage = action.payload;
+    
+        // Update localStorage user
+        localStorage.setItem("authUser", JSON.stringify(state.user));
+    
+        // Also update inside authUsers list
+        const storedUsers = localStorage.getItem("authUsers");
+        if (storedUsers) {
+          const users: User[] = JSON.parse(storedUsers);
+          const updatedUsers = users.map(u =>
+            u.email === state.user?.email ? { ...u, profileImage: action.payload } : u
+          );
+          localStorage.setItem("authUsers", JSON.stringify(updatedUsers));
+        }
+      }
+    }
+    
   },
   extraReducers: (builder) => {
     builder
@@ -114,5 +133,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setError, setLoading } = authSlice.actions;
+export const { logout, setError, setLoading, updateProfileImage } = authSlice.actions;
 export default authSlice.reducer;
