@@ -1,10 +1,10 @@
-// src/store/slices/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
 export interface User {
   name: string;
   email: string;
+  profileImage?: string
 }
 
 interface AuthState {
@@ -13,30 +13,34 @@ interface AuthState {
   error: string | null;
 }
 
-// Load from localStorage
-const storedUser = localStorage.getItem('authUser');
-
 const initialState: AuthState = {
-  user: storedUser ? JSON.parse(storedUser) : null,
+  user: null,
   loading: false,
   error: null,
 };
 
 // Async Thunks
 
+// Register a new user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData: User, { rejectWithValue }) => {
     try {
-      const stored = localStorage.getItem('authUser');
-      if (stored) {
-        const existingUser = JSON.parse(stored);
-        if (existingUser.email === userData.email) {
-          throw new Error('User already exists');
-        }
+      // Get the list of existing users from localStorage
+      const storedUsers = localStorage.getItem('authUsers');
+      const users: User[] = storedUsers ? JSON.parse(storedUsers) : [];
+
+      // Check if the user already exists
+      if (users.some(user => user.email === userData.email)) {
+        throw new Error('User already exists');
       }
 
-      localStorage.setItem('authUser', JSON.stringify(userData));
+      // Add the new user to the array
+      users.push(userData);
+
+      // Store the updated list in localStorage
+      localStorage.setItem('authUsers', JSON.stringify(users));
+
       toast.success('Registered successfully 🎉');
       return userData;
     } catch (err: any) {
@@ -46,21 +50,24 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// Login an existing user
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData: User, { rejectWithValue }) => {
     try {
-      const stored = localStorage.getItem('authUser');
-      if (!stored) {
-        throw new Error('No registered user found');
+      const storedUsers = localStorage.getItem('authUsers');
+      if (!storedUsers) {
+        throw new Error('No registered users found');
       }
 
-      const existingUser = JSON.parse(stored);
-      if (existingUser.email !== userData.email) {
+      const users: User[] = JSON.parse(storedUsers);
+
+      // Find the user by email
+      const existingUser = users.find(user => user.email === userData.email);
+      if (!existingUser) {
         throw new Error('Invalid email');
       }
 
-      localStorage.setItem('authUser', JSON.stringify(existingUser));
       toast.success('Logged in successfully 🚀');
       return existingUser;
     } catch (err: any) {
@@ -79,7 +86,6 @@ const authSlice = createSlice({
     logout(state) {
       state.user = null;
       state.error = null;
-      localStorage.removeItem('authUser');
       toast.info('Logged out 🔒');
     },
     setError(state, action: PayloadAction<string | null>) {

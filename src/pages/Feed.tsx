@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Post } from "../store/slices/post-slice"; 
 import FeedCard from "../components/FeedCard";
 
 const Feed = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const posts = useSelector((state: RootState) => state.posts.posts);
   const authUser = useSelector((state: RootState) => state.auth.user);
-
-  useEffect(() => {
-    const storedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-    setPosts(storedPosts);
-  }, []);
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 py-10 px-4">
@@ -29,7 +22,7 @@ const Feed = () => {
         ) : (
           posts
             .slice()
-            .sort((a, b) => Number(b.id) - Number(a.id)) // ⛳ If id is a string, make sure to convert for sorting
+            .sort((a, b) => Number(b.id) - Number(a.id)) // Still good if id is numeric-like
             .map((post) => <FeedCard key={post.id} post={post} />)
         )}
       </div>

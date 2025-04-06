@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { toast } from 'react-toastify';
 import { createPost } from '../store/slices/post-slice';
-import { uploadImageToCloudinary } from '../utils/cloudinary'; // 🌩️ Utility
+import { uploadImageToCloudinary } from '../utils/cloudinary'; 
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const CreatePost = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // If user is not logged in, navigate to login page
   if (!user) {
     navigate('/login');
     return null;
@@ -41,12 +42,14 @@ const CreatePost = () => {
     let imageUrl: string | undefined;
 
     try {
+      // If there's an image file, upload to Cloudinary
       if (imageFile) {
         imageUrl = await uploadImageToCloudinary(imageFile);
       }
 
+      // Prepare new post data
       const newPost = {
-        id: Date.now().toString(),
+        id: Date.now().toString(), // You can replace this with unique ID if you want
         caption,
         image: imageUrl,
         createdAt: new Date().toISOString(),
@@ -56,7 +59,10 @@ const CreatePost = () => {
         },
       };
 
+      // Dispatch the createPost action to store the post
       const resultAction = await dispatch(createPost(newPost));
+
+      // Check if the post creation was successful
       if (createPost.fulfilled.match(resultAction)) {
         toast.success('Post created successfully 🚀');
         navigate('/');

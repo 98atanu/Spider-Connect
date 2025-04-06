@@ -4,9 +4,14 @@ import { useAppSelector } from "../store";
 import { RootState, AppDispatch } from "../store";
 import { logout, loginUser } from "../store/slices/auth-slice";
 import SpiderLogo from "../assets/web.png";
-import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import { FiHome, FiPlusCircle, FiUser, FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
+import { FaHome } from "react-icons/fa";
+import { MdLibraryAdd } from "react-icons/md";
+import { FaCircleUser } from "react-icons/fa6";
+
+
+
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,7 +30,6 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("authUser");
     dispatch(logout());
-    toast.info("Logged out 🔒");
     setMenuOpen(false);
     navigate("/login");
   };
@@ -50,22 +54,23 @@ const Navbar = () => {
                 to="/"
                 className="flex items-center gap-1 text-indigo-400 hover:text-white transition"
               >
-                <FiHome className="text-xl" />
-                <span className="hidden sm:inline">Feed</span>
+                
+                <FaHome className="text-xl" />
+                <span className="hidden sm:inline font-bold">Feed</span>
               </Link>
               <Link
                 to="/post/new"
                 className="flex items-center gap-1 text-indigo-400 hover:text-white transition"
               >
-                <FiPlusCircle className="text-xl" />
-                <span className="hidden sm:inline">New</span>
+                <MdLibraryAdd className="text-xl" />
+                <span className="hidden sm:inline font-bold">New</span>
               </Link>
               <Link
                 to="/profile"
                 className="flex items-center gap-1 text-indigo-400 hover:text-white transition"
               >
-                <FiUser className="text-xl" />
-                <span className="hidden sm:inline">Profile</span>
+                <FaCircleUser className="text-xl" />
+                <span className="hidden sm:inline font-bold">Profile</span>
               </Link>
               <span className="text-slate-300 text-sm hidden sm:inline">
                 Hi, {user.name} 👋

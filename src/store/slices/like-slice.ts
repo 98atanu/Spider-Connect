@@ -1,11 +1,19 @@
-// src/store/slices/likeSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface LikeState {
   [postId: string]: string[]; // postId: [userEmails]
 }
 
 const initialState: LikeState = {};
+
+// Thunk to load likes from localStorage
+export const loadLikesFromStorage = createAsyncThunk(
+  "likes/loadLikesFromStorage",
+  async () => {
+    const stored = localStorage.getItem("likes");
+    return stored ? JSON.parse(stored) : {};
+  }
+);
 
 const likeSlice = createSlice({
   name: "likes",
@@ -23,12 +31,14 @@ const likeSlice = createSlice({
 
       localStorage.setItem("likes", JSON.stringify(state));
     },
-    loadLikesFromStorage: (state) => {
-      const stored = localStorage.getItem("likes");
-      return stored ? JSON.parse(stored) : {};
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loadLikesFromStorage.fulfilled, (state, action) => {
+        return action.payload;
+      });
   },
 });
 
-export const { toggleLike, loadLikesFromStorage } = likeSlice.actions;
+export const { toggleLike } = likeSlice.actions;
 export default likeSlice.reducer;

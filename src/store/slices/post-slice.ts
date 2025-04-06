@@ -1,4 +1,5 @@
-// src/store/slices/postSlice.ts
+// post-slice.ts
+
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface Post {
@@ -36,12 +37,23 @@ export const createPost = createAsyncThunk("posts/createPost", async (newPost: P
   return newPost;
 });
 
+export const updatePost = createAsyncThunk("posts/updatePost", async (updatedPost: Post) => {
+  const stored = localStorage.getItem("posts");
+  const currentPosts: Post[] = stored ? JSON.parse(stored) : [];
+  const index = currentPosts.findIndex((post) => post.id === updatedPost.id);
+  if (index > -1) {
+    currentPosts[index] = updatedPost;
+  }
+  localStorage.setItem("posts", JSON.stringify(currentPosts));
+  return updatedPost;
+});
+
 export const deletePost = createAsyncThunk("posts/deletePost", async (postId: string) => {
   const stored = localStorage.getItem("posts");
   const currentPosts: Post[] = stored ? JSON.parse(stored) : [];
   const updatedPosts = currentPosts.filter((post) => post.id !== postId);
   localStorage.setItem("posts", JSON.stringify(updatedPosts));
-  return postId;
+  return postId; // Return the postId to delete it from the Redux state
 });
 
 const postSlice = createSlice({
@@ -50,7 +62,7 @@ const postSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Load
+      // Load Posts
       .addCase(loadPosts.pending, (state) => {
         state.loading = true;
       })
@@ -62,16 +74,25 @@ const postSlice = createSlice({
         state.loading = false;
       })
 
-      // Create
+      // Create Post
       .addCase(createPost.fulfilled, (state, action: PayloadAction<Post>) => {
         state.posts.unshift(action.payload);
       })
 
-      // Delete
+      // Update Post
+      .addCase(updatePost.fulfilled, (state, action: PayloadAction<Post>) => {
+        const index = state.posts.findIndex((post) => post.id === action.payload.id);
+        if (index > -1) {
+          state.posts[index] = action.payload;
+        }
+      })
+
+      // Delete Post
       .addCase(deletePost.fulfilled, (state, action: PayloadAction<string>) => {
         state.posts = state.posts.filter((post) => post.id !== action.payload);
       });
   },
 });
+
 
 export default postSlice.reducer;
